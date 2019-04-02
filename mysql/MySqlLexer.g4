@@ -33,7 +33,7 @@ SPACE:                               [ \t\r\n]+    -> channel(HIDDEN);
 SPEC_MYSQL_COMMENT:                  '/*!' .+? '*/' -> channel(MYSQLCOMMENT);
 COMMENT_INPUT:                       '/*' .*? '*/' -> channel(HIDDEN);
 LINE_COMMENT:                        (
-                                       ('-- ' | '#') ~[\r\n]* ('\r'? '\n' | EOF) 
+                                       ('-- ' | '#') ~[\r\n]* ('\r'? '\n' | EOF)
                                        | '--' ('\r'? '\n' | EOF) 
                                      ) -> channel(HIDDEN);
 
@@ -219,8 +219,10 @@ INTEGER:                             'INTEGER';
 BIGINT:                              'BIGINT';
 REAL:                                'REAL';
 DOUBLE:                              'DOUBLE';
+PRECISION:                           'PRECISION';
 FLOAT:                               'FLOAT';
 DECIMAL:                             'DECIMAL';
+DEC:                                 'DEC';
 NUMERIC:                             'NUMERIC';
 DATE:                                'DATE';
 TIME:                                'TIME';
@@ -229,6 +231,8 @@ DATETIME:                            'DATETIME';
 YEAR:                                'YEAR';
 CHAR:                                'CHAR';
 VARCHAR:                             'VARCHAR';
+NVARCHAR:                            'NVARCHAR';
+NATIONAL:                            'NATIONAL';
 BINARY:                              'BINARY';
 VARBINARY:                           'VARBINARY';
 TINYBLOB:                            'TINYBLOB';
@@ -240,6 +244,7 @@ TEXT:                                'TEXT';
 MEDIUMTEXT:                          'MEDIUMTEXT';
 LONGTEXT:                            'LONGTEXT';
 ENUM:                                'ENUM';
+VARYING:                             'VARYING';
 SERIAL:                              'SERIAL';
 
 
@@ -251,7 +256,7 @@ DAY_MINUTE:                          'DAY_MINUTE';
 DAY_SECOND:                          'DAY_SECOND';
 HOUR_MINUTE:                         'HOUR_MINUTE';
 HOUR_SECOND:                         'HOUR_SECOND';
-MINUTE_SECOND:                       'MINUTE_SECOND'; 
+MINUTE_SECOND:                       'MINUTE_SECOND';
 SECOND_MICROSECOND:                  'SECOND_MICROSECOND';
 MINUTE_MICROSECOND:                  'MINUTE_MICROSECOND';
 HOUR_MICROSECOND:                    'HOUR_MICROSECOND';
@@ -330,6 +335,7 @@ CHAIN:                               'CHAIN';
 CHANGED:                             'CHANGED';
 CHANNEL:                             'CHANNEL';
 CHECKSUM:                            'CHECKSUM';
+PAGE_CHECKSUM:                       'PAGE_CHECKSUM';
 CIPHER:                              'CIPHER';
 CLIENT:                              'CLIENT';
 CLOSE:                               'CLOSE';
@@ -700,7 +706,7 @@ MRG_MYISAM:                          'MRG_MYISAM';
 MYISAM:                              'MYISAM';
 NDB:                                 'NDB';
 NDBCLUSTER:                          'NDBCLUSTER';
-PERFOMANCE_SCHEMA:                   'PERFOMANCE_SCHEMA';
+PERFORMANCE_SCHEMA:                  'PERFORMANCE_SCHEMA';
 
 
 // Transaction Levels
@@ -714,6 +720,8 @@ SERIALIZABLE:                        'SERIALIZABLE';
 // Spatial data types
 
 GEOMETRYCOLLECTION:                  'GEOMETRYCOLLECTION';
+GEOMCOLLECTION:                      'GEOMCOLLECTION';
+GEOMETRY:                            'GEOMETRY';
 LINESTRING:                          'LINESTRING';
 MULTILINESTRING:                     'MULTILINESTRING';
 MULTIPOINT:                          'MULTIPOINT';
@@ -1124,40 +1132,40 @@ ID:                                  ID_LITERAL;
 // DOUBLE_QUOTE_ID:                  '"' ~'"'+ '"';
 REVERSE_QUOTE_ID:                    '`' ~'`'+ '`';
 STRING_USER_NAME:                    (
-                                       SQUOTA_STRING | DQUOTA_STRING 
+                                       SQUOTA_STRING | DQUOTA_STRING
                                        | BQUOTA_STRING | ID_LITERAL
-                                     ) '@' 
+                                     ) '@'
                                      (
-                                       SQUOTA_STRING | DQUOTA_STRING 
+                                       SQUOTA_STRING | DQUOTA_STRING
                                        | BQUOTA_STRING | ID_LITERAL
                                      );
 LOCAL_ID:                            '@'
                                 (
-                                  [A-Z0-9._$]+ 
+                                  [A-Z0-9._$]+
                                   | SQUOTA_STRING
                                   | DQUOTA_STRING
                                   | BQUOTA_STRING
                                 );
-GLOBAL_ID:                           '@' '@' 
+GLOBAL_ID:                           '@' '@'
                                 (
-                                  [A-Z0-9._$]+ 
+                                  [A-Z0-9._$]+
                                   | BQUOTA_STRING
                                 );
 
 
 // Fragments for Literal primitives
 
-fragment CHARSET_NAME:               ARMSCII8 | ASCII | BIG5 | BINARY | CP1250 
-                                     | CP1251 | CP1256 | CP1257 | CP850 
-                                     | CP852 | CP866 | CP932 | DEC8 | EUCJPMS 
-                                     | EUCKR | GB2312 | GBK | GEOSTD8 | GREEK 
-                                     | HEBREW | HP8 | KEYBCS2 | KOI8R | KOI8U 
-                                     | LATIN1 | LATIN2 | LATIN5 | LATIN7 
-                                     | MACCE | MACROMAN | SJIS | SWE7 | TIS620 
-                                     | UCS2 | UJIS | UTF16 | UTF16LE | UTF32 
+fragment CHARSET_NAME:               ARMSCII8 | ASCII | BIG5 | BINARY | CP1250
+                                     | CP1251 | CP1256 | CP1257 | CP850
+                                     | CP852 | CP866 | CP932 | DEC8 | EUCJPMS
+                                     | EUCKR | GB2312 | GBK | GEOSTD8 | GREEK
+                                     | HEBREW | HP8 | KEYBCS2 | KOI8R | KOI8U
+                                     | LATIN1 | LATIN2 | LATIN5 | LATIN7
+                                     | MACCE | MACROMAN | SJIS | SWE7 | TIS620
+                                     | UCS2 | UJIS | UTF16 | UTF16LE | UTF32
                                      | UTF8 | UTF8MB4;
 
-fragment EXPONENT_NUM_PART:          'E' '-'? DEC_DIGIT+;
+fragment EXPONENT_NUM_PART:          'E' [\-+]? DEC_DIGIT+;
 fragment ID_LITERAL:                 [A-Z_$0-9]*?[A-Z_$]+?[A-Z_$0-9]*;
 fragment DQUOTA_STRING:              '"' ( '\\'. | '""' | ~('"'| '\\') )* '"';
 fragment SQUOTA_STRING:              '\'' ('\\'. | '\'\'' | ~('\'' | '\\'))* '\'';
